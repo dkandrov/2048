@@ -71,6 +71,38 @@ KeyboardInputManager.prototype.listen = function () {
     }
   });
 
+  // Mouse moving processing
+  var deltaX = 0;
+  var deltaY = 0;
+  const minDelta = 40;
+  document.addEventListener("mousemove", function (event) {
+    var buttonClicked = event.buttons;
+    if (buttonClicked != 0) {
+      deltaX += event.movementX;
+      deltaY += event.movementY;
+    }
+  });
+
+  document.addEventListener("mouseup", function (event) {
+    if(Math.abs(deltaX) > Math.abs(deltaY)){
+      if(Math.abs(deltaX) > minDelta){
+        if(deltaX > 0)
+          self.emit("move", 1);
+        else
+          self.emit("move", 3);
+      }
+    }else{
+      if(Math.abs(deltaY) > minDelta){
+        if(deltaY > 0)
+          self.emit("move", 2);
+        else
+          self.emit("move", 0);
+      }
+    }
+    deltaX = 0;
+    deltaY = 0;
+  });
+
   // Respond to button presses
   this.bindButtonPress(".retry-button", this.restart);
   this.bindButtonPress(".restart-button", this.restart);
